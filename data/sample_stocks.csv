@@ -1,0 +1,11 @@
+ticker,company_name,price,industry,market_cap
+AAPL,Apple Inc.,150.25,Technology,2500000000000
+GOOGL,Alphabet Inc.,2800.50,Technology,1800000000000
+MSFT,Microsoft Corporation,380.00,Technology,2800000000000
+TSLA,Tesla Inc.,250.00,Automotive,800000000000
+NVDA,NVIDIA Corporation,450.75,Technology,1100000000000
+JPM,JPMorgan Chase,145.30,Financial,420000000000
+JNJ,Johnson & Johnson,165.80,Healthcare,430000000000
+V,Visa Inc.,235.60,Financial,500000000000
+WMT,Walmart Inc.,155.20,Retail,420000000000
+PG,Procter & Gamble,145.90,Consumer Goods,350000000000

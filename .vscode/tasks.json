@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "测试当前章节",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/test_runner.py",
+                "${input:chapterNumber}"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "测试所有章节",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/test_runner.py",
+                "all"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "列出所有章节",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/test_runner.py",
+                "--list"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "chapterNumber",
+            "type": "pickString",
+            "description": "选择要测试的章节",
+            "options": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+            ],
+            "default": "1"
+        }
+    ]
+}

@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习平台 - 第4章：文件操作与异常处理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .exercise-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .exercise-item.completed {
+            background: #d1fae5;
+            border-color: #4ade80;
+        }
+
+        .exercise-item.completed::before {
+            content: "✅";
+            font-size: 1.2em;
+        }
+
+        .exercise-item.active.completed {
+            background: #4ade80;
+            color: white;
+        }
+
+        .content-area {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .lesson-content h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .lesson-content h3 {
+            color: #475569;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content ul {
+            margin-left: 30px;
+            line-height: 2;
+            color: #475569;
+        }
+
+        .code-editor {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .code-editor textarea:focus {
+            outline: 2px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .output-area {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 150px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .output-area.show {
+            display: block;
+        }
+
+        .output-area.success {
+            background: #d1fae5;
+            border: 2px solid #4ade80;
+        }
+
+        .output-area.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+        }
+
+        .hint-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint-box h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #3730a3;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .knowledge-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← 返回世界1</a>
+            <h1>🌱 世界 1：Python 基础村</h1>
+            <p>第 4 章：文件操作与异常处理</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📚 练习列表</h2>
+                <ul class="exercise-list" id="exerciseList">
+                    <li class="exercise-item active" data-exercise="0">课程介绍</li>
+                    <li class="exercise-item" data-exercise="1">练习 1：写入文本文件</li>
+                    <li class="exercise-item" data-exercise="2">练习 2：读取文本文件</li>
+                    <li class="exercise-item" data-exercise="3">练习 3：写入 CSV</li>
+                    <li class="exercise-item" data-exercise="4">练习 4：读取 CSV</li>
+                    <li class="exercise-item" data-exercise="5">练习 5：JSON 操作</li>
+                    <li class="exercise-item" data-exercise="6">练习 6：异常处理基础</li>
+                    <li class="exercise-item" data-exercise="7">练习 7：文件异常处理</li>
+                    <li class="exercise-item" data-exercise="8">练习 8：数据验证</li>
+                </ul>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <!-- 课程介绍 -->
+                <div class="lesson-content active" id="lesson-0">
+                    <h2>📖 欢迎来到第 4 章！</h2>
+
+                    <h3>🎯 本章目标</h3>
+                    <p>学习如何读写文件、处理不同格式的数据，以及优雅地处理程序错误。</p>
+
+                    <h3>📚 核心内容</h3>
+                    <ul style="margin-left: 30px; line-height: 2;">
+                        <li><strong>文件操作</strong>：读写文本文件、with 语句</li>
+                        <li><strong>CSV 处理</strong>：读写表格数据</li>
+                        <li><strong>JSON 处理</strong>：处理结构化数据</li>
+                        <li><strong>异常处理</strong>：try-except、错误类型</li>
+                    </ul>
+
+                    <div class="example-box">
+                        <h4>💡 为什么需要文件操作？</h4>
+                        <p>在量化金融项目中，我们经常需要：</p>
+                        <ul style="margin-left: 20px;">
+                            <li>读取股票数据文件（CSV 格式）</li>
+                            <li>保存分析结果（JSON 格式）</li>
+                            <li>处理可能出现的错误（文件不存在、格式错误等）</li>
+                        </ul>
+                    </div>
+def calculate_profit(buy_price, sell_price):
+    return (sell_price - buy_price) / buy_price * 100
+
+# 函数是对象
+print(type(calculate_profit))  # <class 'function'>
+print(id(calculate_profit))    # 内存地址
+
+# 可以赋值给变量
+calc = calculate_profit
+result = calc(100, 150)  # 50.0
+
+# 可以存储在容器中
+operations = [calculate_profit, abs, round]</code></pre>
+
+                    <h3>📊 本章内容</h3>
+
+                    <div class="example-box">
+                        <h4>1️⃣ PyFunctionObject 结构</h4>
+                        <p>CPython 中函数对象的内存表示</p>
+                        <pre><code>typedef struct {
+    PyObject_HEAD
+    PyObject *func_code;        // 代码对象（字节码）
+    PyObject *func_globals;     // 全局命名空间
+    PyObject *func_defaults;    // 默认参数值
+    PyObject *func_kwdefaults;  // 关键字默认参数
+    PyObject *func_closure;     // 闭包（cell 对象）
+    PyObject *func_doc;         // 文档字符串
+    PyObject *func_name;        // 函数名
+    PyObject *func_dict;        // __dict__ 属性
+    PyObject *func_annotations; // 类型注解
+} PyFunctionObject;
+
+# 访问函数属性
+def example(x, y=10):
+    return x + y
+
+print(example.__code__)      # code object
+print(example.__defaults__)  # (10,)
+print(example.__name__)      # 'example'</code></pre>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2️⃣ 参数传递机制</h4>
+                        <p>位置参数、默认参数、关键字参数的字节码实现</p>
+                        <pre><code>def func(a, b=10, *args, **kwargs):
+    pass
+
+# 字节码分析
+import dis
+dis.dis(func)
+
+# 调用约定
+func(1)              # LOAD_CONST, CALL_FUNCTION 1
+func(1, 2)           # LOAD_CONST, LOAD_CONST, CALL_FUNCTION 2
+func(1, b=2)         # LOAD_CONST, LOAD_CONST, CALL_FUNCTION_KW
+func(1, 2, 3, 4)     # CALL_FUNCTION_EX (with *args)
+func(1, x=2, y=3)    # CALL_FUNCTION_EX (with **kwargs)
+
+# 参数解析时间复杂度
+# 位置参数：O(1) - 直接索引
+# 关键字参数：O(k) - k 为关键字数量
+# *args/**kwargs：O(n) - 构建元组/字典</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：LEGB 作用域规则</h4>
+                        <p><strong>名称查找顺序：</strong></p>
+                        <pre><code># L - Local（局部）
+# E - Enclosing（闭包）
+# G - Global（全局）
+# B - Built-in（内置）
+
+x = "global"
+
+def outer():
+    x = "enclosing"
+
+    def inner():
+        x = "local"
+        print(x)  # local
+
+    inner()
+
+outer()
+
+# 字节码指令
+# LOAD_FAST    - 局部变量（最快）
+# LOAD_DEREF   - 闭包变量（cell 对象）
+# LOAD_GLOBAL  - 全局变量（字典查找）
+# LOAD_NAME    - 动态查找（最慢）</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 高阶函数与惰性求值</h4>
+                        <p>函数作为参数和返回值，迭代器的惰性特性</p>
+                        <pre><code># map/filter 返回迭代器（惰性）
+numbers = [1, 2, 3, 4, 5]
+squared = map(lambda x: x**2, numbers)
+print(type(squared))  # <class 'map'>
+
+# 不立即计算，按需生成
+for value in squared:
+    print(value)  # 1, 4, 9, 16, 25
+
+# 对比列表推导式（立即求值）
+squared_list = [x**2 for x in numbers]  # 立即分配内存
+
+# 性能对比
+# map/filter：O(1) 空间，惰性求值
+# 列表推导式：O(n) 空间，立即求值
+# 选择依据：是否需要多次遍历</code></pre>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 函数对象的优势</h4>
+                        <ul>
+                            <li><strong>一等公民</strong>：可赋值、传递、返回</li>
+                            <li><strong>闭包</strong>：捕获外部作用域变量</li>
+                            <li><strong>高阶函数</strong>：函数式编程范式</li>
+                            <li><strong>装饰器</strong>：函数包装和增强（下一章）</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()" style="visibility: hidden;">上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">开始练习 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 1 -->
+                <div class="lesson-content" id="lesson-1">
+                    <h2>练习 1：定义基础函数</h2>
+                    <p>定义一个函数 <code>calculate_profit</code>，计算股票收益率。</p>
+                    <p>收益率 = (卖出价 - 买入价) / 买入价 × 100</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 使用 <code>def</code> 关键字定义函数</p>
+                        <p>2. 函数需要两个参数：buy_price 和 sell_price</p>
+                        <p>3. 使用 <code>return</code> 返回计算结果</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 函数定义格式</h4>
+                        <pre><code>def 函数名(参数1, 参数2):
+    # 函数体
+    结果 = 参数1 + 参数2
+    return 结果
+
+# 调用函数
+返回值 = 函数名(10, 20)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-1">def calculate_profit(buy_price, sell_price):
+    # 在这里写你的代码
+    # 提示：return (sell_price - buy_price) / buy_price * 100
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(1)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(1)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-1"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 2 -->
+                <div class="lesson-content" id="lesson-2">
+                    <h2>练习 2：多个参数</h2>
+                    <p>定义一个函数，计算投资组合的总价值。</p>
+                    <p>总价值 = 价格 × 数量</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>函数接收三个参数：ticker（股票代码）、price（价格）、shares（数量）</p>
+                        <p>返回一个字典，包含 ticker 和 value</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 返回字典示例</h4>
+                        <pre><code>def create_person(name, age):
+    return {
+        "name": name,
+        "age": age
+    }
+
+person = create_person("Alice", 25)
+print(person)  # {"name": "Alice", "age": 25}</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-2">def calculate_stock_value(ticker, price, shares):
+    # 在这里写你的代码
+    # 返回格式：{"ticker": ticker, "value": price * shares}
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(2)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(2)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-2"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 3 -->
+                <div class="lesson-content" id="lesson-3">
+                    <h2>练习 3：写入 CSV 文件</h2>
+                    <p>将股票数据写入 CSV 文件，使用 csv.DictWriter 处理字典列表。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：CSV 格式</h4>
+                        <p><strong>CSV（Comma-Separated Values）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>纯文本格式，每行一条记录</li>
+                            <li>字段用逗号分隔（可自定义分隔符）</li>
+                            <li>第一行通常是表头（字段名）</li>
+                            <li>Excel 和数据库都支持导入导出</li>
+                        </ul>
+                        <p><strong>csv 模块优势：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>自动处理特殊字符（逗号、引号、换行）</li>
+                            <li>DictWriter 让代码更清晰</li>
+                            <li>支持自定义方言（dialect）</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>csv.DictWriter(file, fieldnames)</code></p>
+                        <p>2. 调用 <code>writer.writeheader()</code> 写入表头</p>
+                        <p>3. 使用 <code>writer.writerows(stocks)</code> 写入所有行</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 CSV vs JSON 对比</h4>
+                        <pre><code># CSV 格式（表格数据）
+code,name,price
+AAPL,Apple,150.25
+GOOGL,Google,2800.50
+
+# JSON 格式（嵌套数据）
+[
+  {"code": "AAPL", "name": "Apple", "price": 150.25},
+  {"code": "GOOGL", "name": "Google", "price": 2800.50}
+]
+
+# 选择依据：
+# CSV：Excel 兼容、文件更小、适合表格数据
+# JSON：支持嵌套、Web API 常用、可读性好</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-3" placeholder="在这里写你的代码...">import csv
+
+def write_stocks_csv(stocks, filename):
+    # stocks 是字典列表：[{'code': 'AAPL', 'name': 'Apple', 'price': 150}]
+    # 提示：使用 csv.DictWriter
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(3)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(3)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-3"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 4 -->
+                <div class="lesson-content" id="lesson-4">
+                    <h2>练习 4：读取 CSV 文件</h2>
+                    <p>从 CSV 文件读取股票数据，返回字典列表。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：DictReader</h4>
+                        <p><strong>DictReader 工作原理：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>自动读取第一行作为字段名</li>
+                            <li>每行数据转换为字典</li>
+                            <li>字典的键是字段名，值是对应的数据</li>
+                            <li>返回迭代器，可以用 list() 转换</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>csv.DictReader(file)</code></p>
+                        <p>2. 用 <code>list(reader)</code> 转换为列表</p>
+                        <p>3. 记得返回结果</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 使用示例</h4>
+                        <pre><code>import csv
+
+with open('stocks.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row)
+        # {'code': 'AAPL', 'name': 'Apple', 'price': '150'}
+        # 注意：所有值都是字符串，需要转换类型</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-4" placeholder="在这里写你的代码...">import csv
+
+def read_stocks_csv(filename):
+    # 返回股票字典列表
+    # 提示：使用 csv.DictReader
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(4)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(4)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-4"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 5 -->
+                <div class="lesson-content" id="lesson-5">
+                    <h2>练习 5：JSON 操作</h2>
+                    <p>将投资组合数据保存为 JSON 文件。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：JSON 格式</h4>
+                        <p><strong>JSON（JavaScript Object Notation）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>轻量级数据交换格式</li>
+                            <li>易于人阅读和编写</li>
+                            <li>易于机器解析和生成</li>
+                            <li>Web API 的标准格式</li>
+                        </ul>
+                        <p><strong>支持的数据类型：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>对象（字典）：{"key": "value"}</li>
+                            <li>数组（列表）：[1, 2, 3]</li>
+                            <li>字符串、数字、布尔值、null</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>json.dump(data, file)</code> 写入文件</p>
+                        <p>2. 添加 <code>indent=4</code> 参数使格式美观</p>
+                        <p>3. 可选：<code>ensure_ascii=False</code> 支持中文</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 JSON 方法对比</h4>
+                        <pre><code>import json
+
+# dump() - 写入文件
+with open('data.json', 'w') as f:
+    json.dump(data, f, indent=4)
+
+# dumps() - 转为字符串
+json_str = json.dumps(data, indent=4)
+
+# load() - 从文件读取
+with open('data.json', 'r') as f:
+    data = json.load(f)
+
+# loads() - 从字符串解析
+data = json.loads(json_str)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-5" placeholder="在这里写你的代码...">import json
+
+def save_portfolio_json(portfolio, filename):
+    # 将投资组合保存为 JSON 文件
+    # 提示：使用 json.dump()
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(5)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(5)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-5"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 6 -->
+                <div class="lesson-content" id="lesson-6">
+                    <h2>练习 6：异常处理基础</h2>
+                    <p>安全地转换价格字符串为浮点数，处理可能的转换错误。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：异常处理机制</h4>
+                        <p><strong>try-except 工作原理：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>try 块：可能出错的代码</li>
+                            <li>except 块：捕获并处理异常</li>
+                            <li>else 块：没有异常时执行</li>
+                            <li>finally 块：无论如何都执行（清理资源）</li>
+                        </ul>
+                        <p><strong>常见异常类型：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>ValueError - 值类型正确但值不合法</li>
+                            <li>TypeError - 类型错误</li>
+                            <li>FileNotFoundError - 文件不存在</li>
+                            <li>KeyError - 字典键不存在</li>
+                            <li>ZeroDivisionError - 除以零</li>
+                            <li>IndexError - 索引越界</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>try-except ValueError</code></p>
+                        <p>2. try 块中尝试 <code>float(price_str)</code></p>
+                        <p>3. except 块中返回 0.0</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 异常处理最佳实践</h4>
+                        <pre><code># ✅ 好的做法：捕获具体异常
+try:
+    price = float(price_str)
+except ValueError:
+    price = 0.0
+
+# ❌ 不好的做法：捕获所有异常
+try:
+    price = float(price_str)
+except:  # 会隐藏其他错误
+    price = 0.0
+
+# 完整的异常处理
+try:
+    price = float(price_str)
+except ValueError as e:
+    print(f"转换失败: {e}")
+    price = 0.0
+else:
+    print("转换成功")
+finally:
+    print("清理资源")</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-6" placeholder="在这里写你的代码...">def safe_convert_price(price_str):
+    # 尝试转换为浮点数，失败返回 0.0
+    # 提示：使用 try-except ValueError
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(6)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(6)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-6"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 7 -->
+                <div class="lesson-content" id="lesson-7">
+                    <h2>练习 7：文件异常处理</h2>
+                    <p>安全地读取文件，处理文件不存在的情况。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：文件操作异常</h4>
+                        <p><strong>常见文件异常：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>FileNotFoundError - 文件或目录不存在</li>
+                            <li>PermissionError - 没有权限访问文件</li>
+                            <li>IsADirectoryError - 期望文件但是目录</li>
+                            <li>IOError - 输入输出错误</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>try-except FileNotFoundError</code></p>
+                        <p>2. try 块中读取文件内容</p>
+                        <p>3. except 块中返回 None</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 文件操作最佳实践</h4>
+                        <pre><code># with 语句自动处理异常
+try:
+    with open(filename, 'r') as f:
+        content = f.read()
+    return content
+except FileNotFoundError:
+    print(f"文件不存在: {filename}")
+    return None
+except PermissionError:
+    print(f"没有权限: {filename}")
+    return None
+
+# with 语句保证文件关闭
+# 即使发生异常也会正确关闭</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-7" placeholder="在这里写你的代码...">def safe_read_file(filename):
+    # 尝试读取文件，失败返回 None
+    # 提示：捕获 FileNotFoundError
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(7)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(7)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-7"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 8 -->
+                <div class="lesson-content" id="lesson-8">
+                    <h2>练习 8：综合应用 - 数据验证</h2>
+                    <p>加载 CSV 文件并验证数据，跳过无效行。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：多层异常处理</h4>
+                        <p><strong>嵌套异常处理：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>外层捕获文件异常（FileNotFoundError）</li>
+                            <li>内层捕获数据异常（ValueError）</li>
+                            <li>每层处理不同类型的错误</li>
+                            <li>保证程序健壮性</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 外层 try-except 处理文件不存在</p>
+                        <p>2. 内层 try-except 处理数据转换错误</p>
+                        <p>3. 跳过无效行，继续处理下一行</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 数据验证示例</h4>
+                        <pre><code>import csv
+
+def load_and_validate_stocks(filename):
+    try:
+        with open(filename, 'r') as f:
+            reader = csv.DictReader(f)
+            valid_stocks = []
+
+            for row in reader:
+                try:
+                    # 验证数据
+                    price = float(row['price'])
+                    if price > 0:
+                        valid_stocks.append(row)
+                except (ValueError, KeyError):
+                    # 跳过无效行
+                    continue
+
+            return valid_stocks
+    except FileNotFoundError:
+        return []</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-8" placeholder="在这里写你的代码...">import csv
+
+def load_and_validate_stocks(filename):
+    # 加载 CSV 并验证数据
+    # 跳过无效行，返回有效股票列表
+    # 提示：外层捕获 FileNotFoundError，内层捕获 ValueError
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(8)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(8)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-8"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()" style="visibility: hidden;">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 更多练习将继续添加 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="chapter4.js?v=1776844000"></script>
+</body>
+</html>
