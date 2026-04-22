@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习平台 - 第5章：面向对象编程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .exercise-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .exercise-item.completed {
+            background: #d1fae5;
+            border-color: #4ade80;
+        }
+
+        .exercise-item.completed::before {
+            content: "✅";
+            font-size: 1.2em;
+        }
+
+        .exercise-item.active.completed {
+            background: #4ade80;
+            color: white;
+        }
+
+        .content-area {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .lesson-content h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .lesson-content h3 {
+            color: #475569;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content ul {
+            margin-left: 30px;
+            line-height: 2;
+            color: #475569;
+        }
+
+        .code-editor {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .code-editor textarea:focus {
+            outline: 2px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .output-area {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 150px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .output-area.show {
+            display: block;
+        }
+
+        .output-area.success {
+            background: #d1fae5;
+            border: 2px solid #4ade80;
+        }
+
+        .output-area.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+        }
+
+        .hint-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint-box h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #3730a3;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .knowledge-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← 返回世界1</a>
+            <h1>🌱 世界 1：Python 基础村</h1>
+            <p>第 5 章：面向对象编程</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📚 练习列表</h2>
+                <ul class="exercise-list" id="exerciseList">
+                    <li class="exercise-item active" data-exercise="0">课程介绍</li>
+                    <li class="exercise-item" data-exercise="1">练习 1：创建类</li>
+                    <li class="exercise-item" data-exercise="2">练习 2：添加方法</li>
+                    <li class="exercise-item" data-exercise="3">练习 3：魔法方法</li>
+                    <li class="exercise-item" data-exercise="4">练习 4：继承</li>
+                    <li class="exercise-item" data-exercise="5">练习 5：属性装饰器</li>
+                    <li class="exercise-item" data-exercise="6">练习 6：类方法</li>
+                    <li class="exercise-item" data-exercise="7">练习 7：综合应用</li>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <!-- 课程介绍 -->
+                <div class="lesson-content active" id="lesson-0">
+                    <h2>📖 第 5 章：面向对象编程</h2>
+
+                    <h3>🎯 本章目标</h3>
+                    <p>掌握 Python 面向对象编程的核心概念：类、对象、继承、封装和多态。</p>
+
+                    <h3>📚 什么是面向对象</h3>
+                    <p>面向对象编程（OOP）是一种编程范式，将数据和操作数据的方法封装在一起：</p>
+                    <pre><code># 定义一个股票类
+class Stock:
+    def __init__(self, code, name, price):
+        self.code = code
+        self.name = name
+        self.price = price
+
+    def get_info(self):
+        return f"{self.code}: {self.name} - ${self.price}"
+
+# 创建对象
+apple = Stock("AAPL", "Apple Inc.", 150.25)
+print(apple.get_info())  # AAPL: Apple Inc. - $150.25</code></pre>
+
+                    <h3>📊 本章内容</h3>
+
+                    <div class="example-box">
+                        <h4>1️⃣ 类和对象</h4>
+                        <p>类是对象的模板，对象是类的实例</p>
+                        <pre><code>class Stock:
+    # 类属性（所有实例共享）
+    market = "US"
+
+    # 构造函数
+    def __init__(self, code, price):
+        # 实例属性（每个实例独有）
+        self.code = code
+        self.price = price
+
+# 创建对象
+stock1 = Stock("AAPL", 150)
+stock2 = Stock("GOOGL", 2800)
+
+print(stock1.market)  # US（类属性）
+print(stock1.code)    # AAPL（实例属性）</code></pre>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2️⃣ 继承</h4>
+                        <p>子类继承父类的属性和方法，可以扩展或重写</p>
+                        <pre><code>class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self.price = price
+
+class TradableStock(Stock):
+    def __init__(self, code, price, shares):
+        super().__init__(code, price)  # 调用父类构造函数
+        self.shares = shares
+
+    def get_value(self):
+        return self.price * self.shares
+
+stock = TradableStock("AAPL", 150, 100)
+print(stock.get_value())  # 15000</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：魔法方法</h4>
+                        <p><strong>特殊方法让对象支持内置操作：</strong></p>
+                        <pre><code>class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self.price = price
+
+    def __str__(self):
+        # print() 时调用
+        return f"{self.code}: ${self.price}"
+
+    def __eq__(self, other):
+        # == 比较时调用
+        return self.code == other.code
+
+    def __lt__(self, other):
+        # < 比较时调用
+        return self.price < other.price
+
+stock1 = Stock("AAPL", 150)
+stock2 = Stock("GOOGL", 2800)
+
+print(stock1)           # AAPL: $150
+print(stock1 == stock2) # False
+print(stock1 < stock2)  # True</code></pre>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 OOP 的优势</h4>
+                        <ul>
+                            <li><strong>封装</strong>：将数据和方法组织在一起</li>
+                            <li><strong>继承</strong>：代码复用，扩展功能</li>
+                            <li><strong>多态</strong>：不同对象响应相同接口</li>
+                            <li><strong>可维护性</strong>：代码结构清晰，易于修改</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()" style="visibility: hidden;">上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">开始练习 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 1 -->
+                <div class="lesson-content" id="lesson-1">
+                    <h2>练习 1：定义基础函数</h2>
+                    <p>定义一个函数 <code>calculate_profit</code>，计算股票收益率。</p>
+                    <p>收益率 = (卖出价 - 买入价) / 买入价 × 100</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 使用 <code>def</code> 关键字定义函数</p>
+                        <p>2. 函数需要两个参数：buy_price 和 sell_price</p>
+                        <p>3. 使用 <code>return</code> 返回计算结果</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 函数定义格式</h4>
+                        <pre><code>def 函数名(参数1, 参数2):
+    # 函数体
+    结果 = 参数1 + 参数2
+    return 结果
+
+# 调用函数
+返回值 = 函数名(10, 20)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-1">def calculate_profit(buy_price, sell_price):
+    # 在这里写你的代码
+    # 提示：return (sell_price - buy_price) / buy_price * 100
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(1)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(1)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-1"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 2 -->
+                <div class="lesson-content" id="lesson-2">
+                    <h2>练习 2：多个参数</h2>
+                    <p>定义一个函数，计算投资组合的总价值。</p>
+                    <p>总价值 = 价格 × 数量</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>函数接收三个参数：ticker（股票代码）、price（价格）、shares（数量）</p>
+                        <p>返回一个字典，包含 ticker 和 value</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 返回字典示例</h4>
+                        <pre><code>def create_person(name, age):
+    return {
+        "name": name,
+        "age": age
+    }
+
+person = create_person("Alice", 25)
+print(person)  # {"name": "Alice", "age": 25}</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-2">def calculate_stock_value(ticker, price, shares):
+    # 在这里写你的代码
+    # 返回格式：{"ticker": ticker, "value": price * shares}
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(2)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(2)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-2"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 4 -->
+                <div class="lesson-content" id="lesson-4">
+                    <h2>练习 4：继承</h2>
+                    <p>创建 TradableStock 类继承 Stock，添加交易功能。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：继承</h4>
+                        <p><strong>继承的优势：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>代码复用 - 避免重复代码</li>
+                            <li>扩展功能 - 在父类基础上添加新功能</li>
+                            <li>多态性 - 子类对象可以当作父类使用</li>
+                            <li>维护性 - 修改父类影响所有子类</li>
+                        </ul>
+                        <p><strong>super() 的作用：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>调用父类的方法</li>
+                            <li>支持多重继承的 MRO（方法解析顺序）</li>
+                            <li>比直接调用父类名更灵活</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>super().__init__(code, price)</code> 调用父类构造函数</p>
+                        <p>2. 添加 <code>self.shares</code> 属性</p>
+                        <p>3. buy 方法增加 shares：<code>self.shares += amount</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 继承示例</h4>
+                        <pre><code>class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self.price = price
+
+class TradableStock(Stock):
+    def __init__(self, code, price, shares):
+        super().__init__(code, price)  # 调用父类
+        self.shares = shares
+
+    def buy(self, amount):
+        self.shares += amount
+
+    def get_value(self):
+        return self.price * self.shares
+
+stock = TradableStock("AAPL", 150, 10)
+stock.buy(5)  # 买入5股
+print(stock.shares)  # 15
+print(stock.get_value())  # 2250
+
+# 设计原则：
+# 继承表示 "is-a" 关系
+# TradableStock 是一种 Stock
+# 优先使用组合而非继承（更灵活）</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-4" placeholder="在这里写你的代码...">class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self.price = price
+
+class TradableStock(Stock):
+    def __init__(self, code, price, shares):
+        # 调用父类的 __init__
+        # 添加 shares 属性
+        pass
+
+    def buy(self, amount):
+        # 增加持有数量
+        pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(4)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(4)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-4"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 5 -->
+                <div class="lesson-content" id="lesson-5">
+                    <h2>练习 5：属性装饰器</h2>
+                    <p>使用 @property 装饰器创建可控制的属性。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：@property</h4>
+                        <p><strong>@property 的优势：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>像访问属性一样调用方法</li>
+                            <li>可以添加验证逻辑</li>
+                            <li>保持接口一致性</li>
+                            <li>延迟计算（只在访问时计算）</li>
+                        </ul>
+                        <p><strong>使用场景：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>需要验证的属性（如价格必须 > 0）</li>
+                            <li>计算属性（如根据其他属性计算）</li>
+                            <li>只读属性（只定义 getter，不定义 setter）</li>
+                            <li>需要在访问时触发副作用</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. getter 返回 <code>self._price</code></p>
+                        <p>2. setter 验证 value > 0，否则抛出 ValueError</p>
+                        <p>3. 私有属性用下划线开头：_price</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 @property 示例</h4>
+                        <pre><code>class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self._price = price  # 私有属性
+
+    @property
+    def price(self):
+        """获取价格"""
+        return self._price
+
+    @price.setter
+    def price(self, value):
+        """设置价格，必须 > 0"""
+        if value <= 0:
+            raise ValueError("价格必须大于0")
+        self._price = value
+
+    @property
+    def price_str(self):
+        """只读属性：格式化价格"""
+        return f"${self._price:.2f}"
+
+stock = Stock("AAPL", 150)
+print(stock.price)  # 150 (调用 getter)
+stock.price = 160   # 调用 setter
+print(stock.price_str)  # $160.00 (只读)
+
+# stock.price = -10  # ValueError!</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-5" placeholder="在这里写你的代码...">class Stock:
+    def __init__(self, code, price):
+        self.code = code
+        self._price = price
+
+    @property
+    def price(self):
+        # 返回价格
+        pass
+
+    @price.setter
+    def price(self, value):
+        # 设置价格，必须 > 0
+        pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(5)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(5)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-5"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 6 -->
+                <div class="lesson-content" id="lesson-6">
+                    <h2>练习 6：类方法和静态方法</h2>
+                    <p>实现类方法和静态方法，理解三种方法的区别。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：三种方法</h4>
+                        <p><strong>实例方法：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>第一个参数是 self（实例本身）</li>
+                            <li>可以访问实例属性和类属性</li>
+                            <li>最常用的方法类型</li>
+                        </ul>
+                        <p><strong>类方法（@classmethod）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>第一个参数是 cls（类本身）</li>
+                            <li>可以访问类属性，不能访问实例属性</li>
+                            <li>常用于工厂方法（创建实例）</li>
+                        </ul>
+                        <p><strong>静态方法（@staticmethod）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>没有特殊的第一个参数</li>
+                            <li>不能访问实例属性和类属性</li>
+                            <li>相当于普通函数，只是放在类里</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 类方法返回 <code>cls.total_stocks</code></p>
+                        <p>2. 静态方法检查代码长度和是否全大写</p>
+                        <p>3. 使用 <code>code.isupper()</code> 和 <code>len(code)</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 三种方法对比</h4>
+                        <pre><code>class Stock:
+    total_stocks = 0  # 类属性
+
+    def __init__(self, code):
+        self.code = code
+        Stock.total_stocks += 1
+
+    # 实例方法
+    def get_code(self):
+        return self.code
+
+    # 类方法
+    @classmethod
+    def get_total(cls):
+        return cls.total_stocks
+
+    # 静态方法
+    @staticmethod
+    def is_valid_code(code):
+        return len(code) <= 5 and code.isupper()
+
+# 调用方式
+stock = Stock("AAPL")
+print(stock.get_code())  # 实例方法
+print(Stock.get_total())  # 类方法
+print(Stock.is_valid_code("AAPL"))  # 静态方法</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-6" placeholder="在这里写你的代码...">class Stock:
+    total_stocks = 0
+
+    def __init__(self, code):
+        self.code = code
+        Stock.total_stocks += 1
+
+    @classmethod
+    def get_total(cls):
+        # 返回总股票数
+        pass
+
+    @staticmethod
+    def is_valid_code(code):
+        # 检查代码是否有效（1-5个大写字母）
+        pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(6)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(6)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-6"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 7 -->
+                <div class="lesson-content" id="lesson-7">
+                    <h2>练习 7：综合应用 - 投资组合类</h2>
+                    <p>创建完整的 Portfolio 类，综合运用所学的 OOP 知识。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：容器魔法方法</h4>
+                        <p><strong>容器协议：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>__len__ - 返回容器大小</li>
+                            <li>__contains__ - 支持 in 运算符</li>
+                            <li>__getitem__ - 支持 [] 索引</li>
+                            <li>__iter__ - 支持 for 循环</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. add_stock 将股票添加到 self.stocks 字典</p>
+                        <p>2. get_total_value 遍历所有股票求和</p>
+                        <p>3. __len__ 返回 len(self.stocks)</p>
+                        <p>4. __contains__ 检查 code in self.stocks</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 完整示例</h4>
+                        <pre><code>class Portfolio:
+    def __init__(self, name):
+        self.name = name
+        self.stocks = {}
+
+    def add_stock(self, stock):
+        self.stocks[stock.code] = stock
+
+    def get_total_value(self):
+        return sum(s.get_value() for s in self.stocks.values())
+
+    def __len__(self):
+        return len(self.stocks)
+
+    def __contains__(self, code):
+        return code in self.stocks
+
+    def __str__(self):
+        return f"Portfolio({self.name}, {len(self)} stocks)"
+
+# 使用
+portfolio = Portfolio("我的投资组合")
+portfolio.add_stock(Stock("AAPL", 150))
+portfolio.add_stock(Stock("GOOGL", 2800))
+
+print(len(portfolio))  # 2
+print("AAPL" in portfolio)  # True
+print(portfolio)  # Portfolio(我的投资组合, 2 stocks)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-7" placeholder="在这里写你的代码...">class Portfolio:
+    def __init__(self, name):
+        self.name = name
+        self.stocks = {}  # {code: Stock}
+
+    def add_stock(self, stock):
+        # 添加股票到组合
+        pass
+
+    def get_total_value(self):
+        # 计算总价值
+        pass
+
+    def __len__(self):
+        # 返回股票数量
+        pass
+
+    def __contains__(self, code):
+        # 检查是否包含某只股票
+        pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(7)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(7)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-7"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()" style="visibility: hidden;">下一题 →</button>
+                    </div>
+                </div>
+                <!-- 更多练习将继续添加 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="chapter5.js?v=1776844000"></script>
+</body>
+</html>

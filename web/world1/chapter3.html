@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习平台 - 第3章：函数与模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .exercise-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .exercise-item.completed {
+            background: #d1fae5;
+            border-color: #4ade80;
+        }
+
+        .exercise-item.completed::before {
+            content: "✅";
+            font-size: 1.2em;
+        }
+
+        .exercise-item.active.completed {
+            background: #4ade80;
+            color: white;
+        }
+
+        .content-area {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .lesson-content h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .lesson-content h3 {
+            color: #475569;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content ul {
+            margin-left: 30px;
+            line-height: 2;
+            color: #475569;
+        }
+
+        .code-editor {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .code-editor textarea:focus {
+            outline: 2px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .output-area {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 150px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .output-area.show {
+            display: block;
+        }
+
+        .output-area.success {
+            background: #d1fae5;
+            border: 2px solid #4ade80;
+        }
+
+        .output-area.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+        }
+
+        .hint-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint-box h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #3730a3;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .knowledge-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← 返回世界1</a>
+            <h1>🌱 世界 1：Python 基础村</h1>
+            <p>第 3 章：函数与模块</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📚 练习列表</h2>
+                <ul class="exercise-list" id="exerciseList">
+                    <li class="exercise-item active" data-exercise="0">课程介绍</li>
+                    <li class="exercise-item" data-exercise="1">练习 1：基础函数</li>
+                    <li class="exercise-item" data-exercise="2">练习 2：参数传递</li>
+                    <li class="exercise-item" data-exercise="3">练习 3：返回值</li>
+                    <li class="exercise-item" data-exercise="4">练习 4：默认参数</li>
+                    <li class="exercise-item" data-exercise="5">练习 5：关键字参数</li>
+                    <li class="exercise-item" data-exercise="6">练习 6：lambda 函数</li>
+                    <li class="exercise-item" data-exercise="7">练习 7：map 函数</li>
+                    <li class="exercise-item" data-exercise="8">练习 8：filter 函数</li>
+                    <li class="exercise-item" data-exercise="9">练习 9：函数作为参数</li>
+                    <li class="exercise-item" data-exercise="10">练习 10：综合应用</li>
+                </ul>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <!-- 课程介绍 -->
+                <div class="lesson-content active" id="lesson-0">
+                    <h2>📖 第 3 章：函数对象与高阶函数</h2>
+
+                    <h3>🎯 本章目标</h3>
+                    <p>理解 Python 函数作为一等公民的本质，掌握函数对象、闭包、高阶函数的底层机制。</p>
+
+                    <h3>📚 函数是对象</h3>
+                    <p>Python 中函数是 PyFunctionObject 实例，可以赋值、传递、作为返回值：</p>
+                    <pre><code># 函数对象的特性
+def calculate_profit(buy_price, sell_price):
+    return (sell_price - buy_price) / buy_price * 100
+
+# 函数是对象
+print(type(calculate_profit))  # <class 'function'>
+print(id(calculate_profit))    # 内存地址
+
+# 可以赋值给变量
+calc = calculate_profit
+result = calc(100, 150)  # 50.0
+
+# 可以存储在容器中
+operations = [calculate_profit, abs, round]</code></pre>
+
+                    <h3>📊 本章内容</h3>
+
+                    <div class="example-box">
+                        <h4>1️⃣ PyFunctionObject 结构</h4>
+                        <p>CPython 中函数对象的内存表示</p>
+                        <pre><code>typedef struct {
+    PyObject_HEAD
+    PyObject *func_code;        // 代码对象（字节码）
+    PyObject *func_globals;     // 全局命名空间
+    PyObject *func_defaults;    // 默认参数值
+    PyObject *func_kwdefaults;  // 关键字默认参数
+    PyObject *func_closure;     // 闭包（cell 对象）
+    PyObject *func_doc;         // 文档字符串
+    PyObject *func_name;        // 函数名
+    PyObject *func_dict;        // __dict__ 属性
+    PyObject *func_annotations; // 类型注解
+} PyFunctionObject;
+
+# 访问函数属性
+def example(x, y=10):
+    return x + y
+
+print(example.__code__)      # code object
+print(example.__defaults__)  # (10,)
+print(example.__name__)      # 'example'</code></pre>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2️⃣ 参数传递机制</h4>
+                        <p>位置参数、默认参数、关键字参数的字节码实现</p>
+                        <pre><code>def func(a, b=10, *args, **kwargs):
+    pass
+
+# 字节码分析
+import dis
+dis.dis(func)
+
+# 调用约定
+func(1)              # LOAD_CONST, CALL_FUNCTION 1
+func(1, 2)           # LOAD_CONST, LOAD_CONST, CALL_FUNCTION 2
+func(1, b=2)         # LOAD_CONST, LOAD_CONST, CALL_FUNCTION_KW
+func(1, 2, 3, 4)     # CALL_FUNCTION_EX (with *args)
+func(1, x=2, y=3)    # CALL_FUNCTION_EX (with **kwargs)
+
+# 参数解析时间复杂度
+# 位置参数：O(1) - 直接索引
+# 关键字参数：O(k) - k 为关键字数量
+# *args/**kwargs：O(n) - 构建元组/字典</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：LEGB 作用域规则</h4>
+                        <p><strong>名称查找顺序：</strong></p>
+                        <pre><code># L - Local（局部）
+# E - Enclosing（闭包）
+# G - Global（全局）
+# B - Built-in（内置）
+
+x = "global"
+
+def outer():
+    x = "enclosing"
+
+    def inner():
+        x = "local"
+        print(x)  # local
+
+    inner()
+
+outer()
+
+# 字节码指令
+# LOAD_FAST    - 局部变量（最快）
+# LOAD_DEREF   - 闭包变量（cell 对象）
+# LOAD_GLOBAL  - 全局变量（字典查找）
+# LOAD_NAME    - 动态查找（最慢）</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 高阶函数与惰性求值</h4>
+                        <p>函数作为参数和返回值，迭代器的惰性特性</p>
+                        <pre><code># map/filter 返回迭代器（惰性）
+numbers = [1, 2, 3, 4, 5]
+squared = map(lambda x: x**2, numbers)
+print(type(squared))  # <class 'map'>
+
+# 不立即计算，按需生成
+for value in squared:
+    print(value)  # 1, 4, 9, 16, 25
+
+# 对比列表推导式（立即求值）
+squared_list = [x**2 for x in numbers]  # 立即分配内存
+
+# 性能对比
+# map/filter：O(1) 空间，惰性求值
+# 列表推导式：O(n) 空间，立即求值
+# 选择依据：是否需要多次遍历</code></pre>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 函数对象的优势</h4>
+                        <ul>
+                            <li><strong>一等公民</strong>：可赋值、传递、返回</li>
+                            <li><strong>闭包</strong>：捕获外部作用域变量</li>
+                            <li><strong>高阶函数</strong>：函数式编程范式</li>
+                            <li><strong>装饰器</strong>：函数包装和增强（下一章）</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()" style="visibility: hidden;">上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">开始练习 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 1 -->
+                <div class="lesson-content" id="lesson-1">
+                    <h2>练习 1：定义基础函数</h2>
+                    <p>定义一个函数 <code>calculate_profit</code>，计算股票收益率。</p>
+                    <p>收益率 = (卖出价 - 买入价) / 买入价 × 100</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 使用 <code>def</code> 关键字定义函数</p>
+                        <p>2. 函数需要两个参数：buy_price 和 sell_price</p>
+                        <p>3. 使用 <code>return</code> 返回计算结果</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 函数定义格式</h4>
+                        <pre><code>def 函数名(参数1, 参数2):
+    # 函数体
+    结果 = 参数1 + 参数2
+    return 结果
+
+# 调用函数
+返回值 = 函数名(10, 20)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-1">def calculate_profit(buy_price, sell_price):
+    # 在这里写你的代码
+    # 提示：return (sell_price - buy_price) / buy_price * 100
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(1)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(1)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-1"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 2 -->
+                <div class="lesson-content" id="lesson-2">
+                    <h2>练习 2：多个参数</h2>
+                    <p>定义一个函数，计算投资组合的总价值。</p>
+                    <p>总价值 = 价格 × 数量</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>函数接收三个参数：ticker（股票代码）、price（价格）、shares（数量）</p>
+                        <p>返回一个字典，包含 ticker 和 value</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 返回字典示例</h4>
+                        <pre><code>def create_person(name, age):
+    return {
+        "name": name,
+        "age": age
+    }
+
+person = create_person("Alice", 25)
+print(person)  # {"name": "Alice", "age": 25}</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-2">def calculate_stock_value(ticker, price, shares):
+    # 在这里写你的代码
+    # 返回格式：{"ticker": ticker, "value": price * shares}
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(2)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(2)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-2"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 3 -->
+                <div class="lesson-content" id="lesson-3">
+                    <h2>练习 3：多返回值</h2>
+                    <p>定义函数返回列表的最小值和最大值。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：元组打包与解包</h4>
+                        <p><strong>元组打包（Tuple Packing）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>return a, b 实际返回一个元组 (a, b)</li>
+                            <li>Python 自动将多个值打包成元组</li>
+                            <li>括号可以省略：return (a, b) 等价于 return a, b</li>
+                        </ul>
+                        <p><strong>元组解包（Tuple Unpacking）：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>min_val, max_val = get_min_max(prices)</li>
+                            <li>解包时数量必须匹配，否则报错</li>
+                            <li>可以用 * 收集剩余元素：a, *rest, b = (1,2,3,4,5)</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用内置函数 <code>min(prices)</code> 和 <code>max(prices)</code></p>
+                        <p>2. 返回两个值：<code>return min(prices), max(prices)</code></p>
+                        <p>3. 接收时可以解包：<code>min_val, max_val = get_min_max(prices)</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 多返回值示例</h4>
+                        <pre><code>def get_min_max(prices):
+    return min(prices), max(prices)
+
+# 解包接收
+min_price, max_price = get_min_max([100, 150, 120])
+print(min_price)  # 100
+print(max_price)  # 150
+
+# 不解包，接收元组
+result = get_min_max([100, 150, 120])
+print(result)  # (100, 150)
+print(type(result))  # <class 'tuple'>
+
+# 实际应用：返回多个相关值
+def analyze_stock(prices):
+    return min(prices), max(prices), sum(prices)/len(prices)
+
+min_p, max_p, avg_p = analyze_stock([100, 150, 120])</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-3" placeholder="在这里写你的代码...">def get_min_max(prices):
+    # 返回最小值和最大值
+    # 提示：return min(prices), max(prices)
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(3)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(3)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-3"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 4 -->
+                <div class="lesson-content" id="lesson-4">
+                    <h2>练习 4：默认参数</h2>
+                    <p>定义带默认值的函数，计算商品总价。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：默认参数</h4>
+                        <p><strong>默认参数规则：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>默认参数在函数定义时设置</li>
+                            <li>调用时可以省略有默认值的参数</li>
+                            <li>默认参数必须在必需参数之后</li>
+                            <li>默认值在函数定义时计算（只执行一次）</li>
+                        </ul>
+                        <p><strong>⚠️ 可变默认参数陷阱：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>不要使用可变对象（列表、字典）作为默认值</li>
+                            <li>默认值只创建一次，多次调用会共享同一对象</li>
+                            <li>正确做法：使用 None，函数内判断并创建新对象</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 定义参数：<code>def calculate_total(price, quantity=1, tax=0.1)</code></p>
+                        <p>2. 计算公式：<code>price * quantity * (1 + tax)</code></p>
+                        <p>3. 返回计算结果</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 默认参数示例</h4>
+                        <pre><code>def calculate_total(price, quantity=1, tax=0.1):
+    return price * quantity * (1 + tax)
+
+# 使用默认值
+print(calculate_total(100))  # 110.0
+
+# 指定部分参数
+print(calculate_total(100, 2))  # 220.0
+
+# 指定所有参数
+print(calculate_total(100, 2, 0.15))  # 230.0
+
+# 使用关键字参数
+print(calculate_total(100, tax=0.2))  # 120.0
+
+# ❌ 错误示例：可变默认参数
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+print(add_item(1))  # [1]
+print(add_item(2))  # [1, 2] - 共享同一列表！
+
+# ✅ 正确做法
+def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-4" placeholder="在这里写你的代码...">def calculate_total(price, quantity=1, tax=0.1):
+    # 在这里写你的代码
+    # 计算总价：price * quantity * (1 + tax)
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(4)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(4)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-4"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 5 -->
+                <div class="lesson-content" id="lesson-5">
+                    <h2>练习 5：关键字参数</h2>
+                    <p>使用关键字参数创建股票信息字典。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：关键字参数</h4>
+                        <p><strong>关键字参数优势：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>提高代码可读性，明确参数含义</li>
+                            <li>参数顺序可以任意调整</li>
+                            <li>可以跳过有默认值的参数</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>返回包含所有参数的字典</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 关键字参数示例</h4>
+                        <pre><code>def create_stock_info(ticker, price, volume, change):
+    return {
+        "ticker": ticker,
+        "price": price,
+        "volume": volume,
+        "change": change
+    }
+
+# 位置参数调用
+stock = create_stock_info("AAPL", 150, 1000000, 2.5)
+
+# 关键字参数调用（更清晰）
+stock = create_stock_info(
+    ticker="AAPL",
+    price=150,
+    volume=1000000,
+    change=2.5
+)</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-5" placeholder="在这里写你的代码...">def create_stock_info(ticker, price, volume, change):
+    # 在这里写你的代码
+    # 返回包含所有信息的字典
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(5)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(5)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-5"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 6 -->
+                <div class="lesson-content" id="lesson-6">
+                    <h2>练习 6：lambda 函数</h2>
+                    <p>创建 lambda 函数计算平方。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：lambda 表达式</h4>
+                        <p><strong>lambda 特点：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>创建匿名函数（没有名字的函数）</li>
+                            <li>语法：lambda 参数: 表达式</li>
+                            <li>只能包含单个表达式，不能有语句</li>
+                            <li>表达式的值自动返回</li>
+                        </ul>
+                        <p><strong>lambda vs def：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>lambda 适合简单的一次性函数</li>
+                            <li>def 适合复杂逻辑和需要复用的函数</li>
+                            <li>性能完全相同，只是语法不同</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 语法：<code>square = lambda x: x ** 2</code></p>
+                        <p>2. 或者：<code>square = lambda x: x * x</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 lambda 示例</h4>
+                        <pre><code># lambda 函数
+square = lambda x: x ** 2
+print(square(5))  # 25
+
+# 等价的 def 函数
+def square(x):
+    return x ** 2
+
+# 使用场景：作为参数传递
+stocks = [
+    {"code": "AAPL", "price": 150},
+    {"code": "GOOGL", "price": 2800},
+    {"code": "MSFT", "price": 300}
+]
+
+# 按价格排序
+stocks.sort(key=lambda s: s["price"])
+
+# 过滤高价股票
+expensive = list(filter(lambda s: s["price"] > 200, stocks))
+
+# map 转换
+prices = list(map(lambda s: s["price"], stocks))</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-6" placeholder="在这里写你的代码..."># 创建 lambda 函数计算平方
+# square = lambda x: ...
+pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(6)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(6)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-6"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 7 -->
+                <div class="lesson-content" id="lesson-7">
+                    <h2>练习 7：map 函数</h2>
+                    <p>使用 map 对列表中每个元素应用函数。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：map 函数</h4>
+                        <p><strong>map 工作原理：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>map(函数, 可迭代对象) 对每个元素应用函数</li>
+                            <li>返回迭代器（惰性求值，节省内存）</li>
+                            <li>需要用 list() 转换成列表</li>
+                            <li>不修改原列表，返回新结果</li>
+                        </ul>
+                        <p><strong>map vs 列表推导式：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>map 返回迭代器，节省内存</li>
+                            <li>列表推导式立即创建列表</li>
+                            <li>列表推导式可读性更好</li>
+                            <li>map 适合链式操作</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>map(lambda x: x * 2, prices)</code></p>
+                        <p>2. 用 <code>list()</code> 转换结果</p>
+                        <p>3. 返回列表</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 map 示例</h4>
+                        <pre><code>prices = [100, 150, 200]
+
+# 使用 map
+doubled = list(map(lambda x: x * 2, prices))
+print(doubled)  # [200, 300, 400]
+
+# 等价的列表推导式
+doubled = [x * 2 for x in prices]
+
+# 转换数据类型
+str_prices = ['100', '200', '300']
+prices = list(map(float, str_prices))
+
+# 批量处理
+names = ['apple', 'google', 'microsoft']
+uppercase = list(map(str.upper, names))
+print(uppercase)  # ['APPLE', 'GOOGLE', 'MICROSOFT']</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-7" placeholder="在这里写你的代码...">def double_prices(prices):
+    # 使用 map 将所有价格翻倍
+    # 提示：list(map(lambda x: x * 2, prices))
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(7)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(7)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-7"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 8 -->
+                <div class="lesson-content" id="lesson-8">
+                    <h2>练习 8：filter 函数</h2>
+                    <p>使用 filter 筛选列表元素。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：filter 函数</h4>
+                        <p><strong>filter 工作原理：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>filter(函数, 可迭代对象) 筛选满足条件的元素</li>
+                            <li>函数返回 True 的元素被保留</li>
+                            <li>返回迭代器（惰性求值）</li>
+                            <li>需要用 list() 转换成列表</li>
+                        </ul>
+                        <p><strong>filter vs 列表推导式：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>列表推导式更 Pythonic，可读性更好</li>
+                            <li>filter 适合已有判断函数的情况</li>
+                            <li>列表推导式可以同时转换和筛选</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 <code>filter(lambda x: x > threshold, prices)</code></p>
+                        <p>2. 用 <code>list()</code> 转换结果</p>
+                        <p>3. 返回列表</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 filter 示例</h4>
+                        <pre><code>prices = [50, 100, 150, 200, 250]
+
+# 使用 filter
+high_prices = list(filter(lambda x: x > 100, prices))
+print(high_prices)  # [150, 200, 250]
+
+# 等价的列表推导式
+high_prices = [x for x in prices if x > 100]
+
+# 筛选有效数据
+valid_prices = list(filter(lambda x: x > 0, prices))
+
+# 组合 map 和 filter
+result = list(map(
+    lambda x: x * 2,
+    filter(lambda x: x > 100, prices)
+))
+print(result)  # [300, 400, 500]</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-8" placeholder="在这里写你的代码...">def filter_high_prices(prices, threshold):
+    # 使用 filter 筛选大于阈值的价格
+    # 提示：list(filter(lambda x: x > threshold, prices))
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(8)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(8)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-8"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 9 -->
+                <div class="lesson-content" id="lesson-9">
+                    <h2>练习 9：函数作为参数</h2>
+                    <p>高阶函数：接收函数作为参数。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：高阶函数</h4>
+                        <p><strong>高阶函数定义：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>接收函数作为参数的函数</li>
+                            <li>或者返回函数的函数</li>
+                            <li>Python 中函数是一等公民</li>
+                        </ul>
+                        <p><strong>高阶函数优势：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>代码更灵活，可以传入不同的操作</li>
+                            <li>减少重复代码</li>
+                            <li>函数式编程的基础</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 遍历 prices 列表</p>
+                        <p>2. 对每个元素调用 operation 函数</p>
+                        <p>3. 返回结果列表</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 高阶函数示例</h4>
+                        <pre><code>def apply_operation(prices, operation):
+    return [operation(price) for price in prices]
+
+# 传入不同的函数
+prices = [100, 150, 200]
+
+# 翻倍
+doubled = apply_operation(prices, lambda x: x * 2)
+print(doubled)  # [200, 300, 400]
+
+# 打折
+discounted = apply_operation(prices, lambda x: x * 0.8)
+print(discounted)  # [80.0, 120.0, 160.0]
+
+# 格式化
+formatted = apply_operation(prices, lambda x: f"${x}")
+print(formatted)  # ['$100', '$150', '$200']
+
+# 高阶函数的实际应用
+def create_multiplier(factor):
+    """返回一个乘法函数"""
+    return lambda x: x * factor
+
+double = create_multiplier(2)
+triple = create_multiplier(3)
+
+print(double(10))  # 20
+print(triple(10))  # 30</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-9" placeholder="在这里写你的代码...">def apply_operation(prices, operation):
+    # 对列表中每个元素应用 operation 函数
+    # 提示：return [operation(price) for price in prices]
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(9)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(9)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-9"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 10 -->
+                <div class="lesson-content" id="lesson-10">
+                    <h2>练习 10：综合应用 - 股票数据处理</h2>
+                    <p>综合运用函数、lambda、map、filter 处理股票数据。</p>
+
+                    <div class="knowledge-box">
+                        <h4>🔍 深入理解：函数式编程</h4>
+                        <p><strong>函数式编程特点：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>函数是一等公民，可以传递和返回</li>
+                            <li>避免副作用，不修改外部状态</li>
+                            <li>使用纯函数，相同输入总是相同输出</li>
+                            <li>链式操作，代码更简洁</li>
+                        </ul>
+                        <p><strong>Python 函数式工具：</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>map、filter、reduce</li>
+                            <li>lambda 表达式</li>
+                            <li>列表推导式</li>
+                            <li>生成器表达式</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 实现提示</h4>
+                        <p>1. 使用 filter 筛选价格 > 100 的股票</p>
+                        <p>2. 使用 map 提取股票代码</p>
+                        <p>3. 转换为列表并返回</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 综合应用示例</h4>
+                        <pre><code>stocks = [
+    {"code": "AAPL", "price": 150},
+    {"code": "GOOGL", "price": 2800},
+    {"code": "MSFT", "price": 300},
+    {"code": "TSLA", "price": 80}
+]
+
+def get_expensive_stock_codes(stocks, threshold):
+    # 筛选高价股票
+    expensive = filter(lambda s: s["price"] > threshold, stocks)
+    # 提取代码
+    codes = map(lambda s: s["code"], expensive)
+    # 转换为列表
+    return list(codes)
+
+result = get_expensive_stock_codes(stocks, 100)
+print(result)  # ['AAPL', 'GOOGL', 'MSFT']
+
+# 链式操作
+result = list(map(
+    lambda s: s["code"],
+    filter(lambda s: s["price"] > 100, stocks)
+))
+
+# 等价的列表推导式（更 Pythonic）
+result = [s["code"] for s in stocks if s["price"] > 100]</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-10" placeholder="在这里写你的代码...">def get_expensive_stock_codes(stocks, threshold):
+    # 返回价格大于阈值的股票代码列表
+    # 提示：
+    # 1. filter 筛选 price > threshold
+    # 2. map 提取 code
+    # 3. list 转换
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(10)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(10)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-10"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()" style="visibility: hidden;">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 更多练习将继续添加 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="chapter3.js?v=1776844000"></script>
+</body>
+</html>

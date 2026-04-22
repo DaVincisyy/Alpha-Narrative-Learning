@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习平台 - 第2章：循环与条件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-item:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+
+        .exercise-item.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .exercise-item.completed {
+            background: #d1fae5;
+            border-color: #4ade80;
+        }
+
+        .exercise-item.completed::before {
+            content: "✅";
+            font-size: 1.2em;
+        }
+
+        .exercise-item.active.completed {
+            background: #4ade80;
+            color: white;
+        }
+
+        .content-area {
+            padding: 40px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .lesson-content h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .lesson-content h3 {
+            color: #475569;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content ul {
+            margin-left: 30px;
+            line-height: 2;
+            color: #475569;
+        }
+
+        .code-editor {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .code-editor textarea:focus {
+            outline: 2px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .output-area {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 150px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .output-area.show {
+            display: block;
+        }
+
+        .output-area.success {
+            background: #d1fae5;
+            border: 2px solid #4ade80;
+        }
+
+        .output-area.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+        }
+
+        .hint-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint-box h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .example-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #3730a3;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-box {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .knowledge-box h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← 返回世界1</a>
+            <h1>🌱 世界 1：Python 基础村</h1>
+            <p>第 2 章：循环与条件判断</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📚 练习列表</h2>
+                <ul class="exercise-list" id="exerciseList">
+                    <li class="exercise-item active" data-exercise="0">课程介绍</li>
+                    <li class="exercise-item" data-exercise="1">练习 1：for 循环基础</li>
+                    <li class="exercise-item" data-exercise="2">练习 2：while 循环</li>
+                    <li class="exercise-item" data-exercise="3">练习 3：if 条件判断</li>
+                    <li class="exercise-item" data-exercise="4">练习 4：if-elif-else</li>
+                    <li class="exercise-item" data-exercise="5">练习 5：循环+条件</li>
+                    <li class="exercise-item" data-exercise="6">练习 6：列表推导式</li>
+                    <li class="exercise-item" data-exercise="7">练习 7：enumerate</li>
+                    <li class="exercise-item" data-exercise="8">练习 8：zip 函数</li>
+                    <li class="exercise-item" data-exercise="9">练习 9：嵌套循环</li>
+                    <li class="exercise-item" data-exercise="10">练习 10：综合应用</li>
+                </ul>
+            </div>
+
+            <div class="content-area">
+                <!-- 课程介绍 -->
+                <div class="lesson-content active" id="lesson-0">
+                    <h2>📖 欢迎来到第 2 章！</h2>
+
+                    <h3>🎯 本章目标</h3>
+                    <p>学习 Python 的控制流机制：迭代和条件分支，理解其字节码实现和性能特性。</p>
+
+                    <h3>📚 控制流的本质</h3>
+                    <p>程序执行流程的控制：</p>
+                    <ul style="margin-left: 30px; line-height: 2;">
+                        <li><strong>顺序执行</strong>：指令按顺序执行（默认）</li>
+                        <li><strong>条件分支</strong>：根据布尔值选择执行路径</li>
+                        <li><strong>循环迭代</strong>：重复执行代码块</li>
+                    </ul>
+
+                    <h3>📊 本章内容</h3>
+
+                    <div class="example-box">
+                        <h4>1️⃣ for 循环 - 迭代器协议</h4>
+                        <p><strong>底层机制：</strong>基于迭代器协议（__iter__ 和 __next__）</p>
+                        <pre><code># for 循环的本质
+for item in iterable:
+    process(item)
+
+# 等价于
+iterator = iter(iterable)  # 调用 __iter__()
+while True:
+    try:
+        item = next(iterator)  # 调用 __next__()
+        process(item)
+    except StopIteration:
+        break
+
+# 字节码分析
+import dis
+dis.dis('for x in [1,2,3]: pass')
+# GET_ITER
+# FOR_ITER
+# STORE_NAME
+# JUMP_ABSOLUTE</code></pre>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>2️⃣ while 循环 - 条件循环</h4>
+                        <p><strong>执行机制：</strong>每次迭代前检查条件</p>
+                        <pre><code># while 循环
+count = 0
+while count < 3:
+    print(count)
+    count += 1
+
+# 字节码
+# LOAD_NAME (count)
+# LOAD_CONST (3)
+# COMPARE_OP (<)
+# POP_JUMP_IF_FALSE
+# ... 循环体 ...
+# JUMP_ABSOLUTE  # 跳回条件检查</code></pre>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>3️⃣ if 条件判断 - 分支跳转</h4>
+                        <p><strong>实现方式：</strong>基于条件的字节码跳转</p>
+                        <pre><code># 条件判断
+if price > 100:
+    category = "high"
+else:
+    category = "low"
+
+# 字节码
+# LOAD_NAME (price)
+# LOAD_CONST (100)
+# COMPARE_OP (>)
+# POP_JUMP_IF_FALSE (else_block)
+# ... if 块 ...
+# JUMP_FORWARD (end)
+# ... else 块 ...
+# end:</code></pre>
+                    </div>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 扩展知识</h4>
+                        <p>本章深入内容：</p>
+                        <ul>
+                            <li><strong>列表推导式</strong>：字节码优化，避免函数调用开销</li>
+                            <li><strong>生成器表达式</strong>：惰性求值，内存效率</li>
+                            <li><strong>enumerate/zip</strong>：迭代器组合</li>
+                            <li><strong>短路求值</strong>：and/or 的优化机制</li>
+                        </ul>
+                    </div>
+
+                    <div class="hint-box">
+                        <h4>💡 性能考虑</h4>
+                        <ul style="margin-left: 20px;">
+                            <li><strong>for vs while</strong>：for 循环通常更快（迭代器协议优化）</li>
+                            <li><strong>列表推导式 vs 循环</strong>：推导式避免 append 的函数调用</li>
+                            <li><strong>生成器 vs 列表</strong>：生成器惰性求值，节省内存</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()" style="visibility: hidden;">上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">开始练习 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 1 -->
+                <div class="lesson-content" id="lesson-1">
+                    <h2>练习 1：for 循环基础</h2>
+                    <p>使用 for 循环遍历股票列表，计算所有股票价格的总和。</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 创建一个变量 <code>total = 0</code> 存储总和</p>
+                        <p>2. 使用 <code>for price in prices:</code> 遍历列表</p>
+                        <p>3. 在循环中累加：<code>total += price</code></p>
+                        <p>4. 返回 total</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 示例：计算数字总和</h4>
+                        <pre><code>numbers = [1, 2, 3, 4, 5]
+total = 0
+
+for num in numbers:
+    total += num  # 等同于 total = total + num
+
+print(total)  # 输出：15</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-1">def calculate_total(prices):
+    # 在这里写你的代码
+    # 提示：创建 total = 0，然后用 for 循环累加
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(1)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(1)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-1"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 2 -->
+                <div class="lesson-content" id="lesson-2">
+                    <h2>练习 2：while 循环</h2>
+                    <p>使用 while 循环，从 1 数到 n，返回所有数字的列表。</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 创建空列表 <code>result = []</code></p>
+                        <p>2. 创建计数器 <code>count = 1</code></p>
+                        <p>3. 使用 <code>while count <= n:</code></p>
+                        <p>4. 在循环中添加数字并递增计数器</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 while 循环示例</h4>
+                        <pre><code>count = 1
+while count <= 3:
+    print(count)
+    count += 1  # 别忘了递增，否则会无限循环！
+
+# 输出：
+# 1
+# 2
+# 3</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-2">def count_to_n(n):
+    # 在这里写你的代码
+    # 提示：使用 while count <= n
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(2)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(2)">重置代码</button>
+                        </div>
+                    </div>
+
+                    <div class="output-area" id="output-2"></div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 3 -->
+                <div class="lesson-content" id="lesson-3">
+                    <h2>练习 3：if 条件判断</h2>
+                    <p>判断价格是否大于阈值，返回 True 或 False。</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>使用 if 判断，如果条件满足返回 True，否则返回 False</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 比较运算符</h4>
+                        <pre><code># 常用比较运算符
+>   大于
+<   小于
+>=  大于等于
+<=  小于等于
+==  等于
+!=  不等于
+
+# 示例
+price = 150
+if price > 100:
+    print("高价")  # 会执行</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-3">def is_high_price(price, threshold):
+    # 在这里写你的代码
+    # 提示：if price > threshold: return True
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(3)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(3)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-3"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 4 -->
+                <div class="lesson-content" id="lesson-4">
+                    <h2>练习 4：if-elif-else 多条件判断</h2>
+                    <p>根据价格分类：</p>
+                    <ul>
+                        <li>价格 >= 200: 返回 "高价股"</li>
+                        <li>价格 >= 100: 返回 "中价股"</li>
+                        <li>价格 < 100: 返回 "低价股"</li>
+                    </ul>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>使用 if-elif-else 处理多个条件</p>
+                        <p>条件从上到下依次检查，匹配第一个满足的</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 if-elif-else 示例</h4>
+                        <pre><code>score = 85
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"  # 会执行这个
+elif score >= 60:
+    grade = "C"
+else:
+    grade = "F"
+
+print(grade)  # 输出：B</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-4">def categorize_price(price):
+    # 在这里写你的代码
+    # 提示：使用 if-elif-else
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(4)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(4)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-4"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 5 -->
+                <div class="lesson-content" id="lesson-5">
+                    <h2>练习 5：循环 + 条件组合</h2>
+                    <p>筛选出所有大于阈值的价格，返回新列表。</p>
+
+                    <div class="hint-box">
+                        <h4>💡 提示</h4>
+                        <p>1. 创建空列表 result = []</p>
+                        <p>2. 用 for 循环遍历所有价格</p>
+                        <p>3. 用 if 判断是否大于阈值</p>
+                        <p>4. 符合条件的添加到 result</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 循环 + 条件示例</h4>
+                        <pre><code>numbers = [1, 5, 10, 15, 20]
+large_numbers = []
+
+for num in numbers:
+    if num > 10:
+        large_numbers.append(num)
+
+print(large_numbers)  # [15, 20]</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-5">def filter_high_prices(prices, threshold):
+    # 在这里写你的代码
+    # 提示：结合 for 循环和 if 判断
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(5)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(5)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-5"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 6 -->
+                <div class="lesson-content" id="lesson-6">
+                    <h2>练习 6：列表推导式 🚀</h2>
+                    <p>用<strong>一行代码</strong>完成练习 5 的功能！</p>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 扩展知识：列表推导式</h4>
+                        <p>列表推导式是 Python 的强大特性，可以用一行代码完成循环 + 筛选。</p>
+                        <p><strong>格式：</strong><code>[表达式 for 变量 in 列表 if 条件]</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 对比：传统方式 vs 列表推导式</h4>
+                        <pre><code># 传统方式（5 行）
+squares = []
+for num in [1, 2, 3, 4, 5]:
+    if num % 2 == 0:
+        squares.append(num ** 2)
+
+# 列表推导式（1 行）
+squares = [num ** 2 for num in [1, 2, 3, 4, 5] if num % 2 == 0]
+
+print(squares)  # [4, 16]</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-6">def filter_with_comprehension(prices, threshold):
+    # 在这里写你的代码
+    # 提示：return [price for price in prices if price > threshold]
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(6)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(6)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-6"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 7 -->
+                <div class="lesson-content" id="lesson-7">
+                    <h2>练习 7：enumerate 函数 🚀</h2>
+                    <p>使用 enumerate 同时获取索引和值，返回格式化的字符串列表。</p>
+                    <p>例如：["0: AAPL", "1: GOOGL", "2: MSFT"]</p>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 扩展知识：enumerate</h4>
+                        <p>enumerate() 函数可以同时获取索引和值，避免手动维护计数器。</p>
+                        <p><strong>格式：</strong><code>for index, value in enumerate(list):</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 enumerate 示例</h4>
+                        <pre><code>fruits = ["苹果", "香蕉", "橙子"]
+
+# 不用 enumerate（需要手动计数）
+for i in range(len(fruits)):
+    print(f"{i}: {fruits[i]}")
+
+# 用 enumerate（更简洁）
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+
+# 输出：
+# 0: 苹果
+# 1: 香蕉
+# 2: 橙子</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-7">def get_stock_with_index(stocks):
+    # 在这里写你的代码
+    # 提示：使用 enumerate(stocks)
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(7)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(7)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-7"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 8 -->
+                <div class="lesson-content" id="lesson-8">
+                    <h2>练习 8：zip 函数 🚀</h2>
+                    <p>使用 zip 同时遍历股票代码和价格，返回字典。</p>
+                    <p>例如：{"AAPL": 150.25, "GOOGL": 2800.50}</p>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 扩展知识：zip</h4>
+                        <p>zip() 函数可以将多个列表"打包"在一起，同时遍历。</p>
+                        <p><strong>格式：</strong><code>for a, b in zip(list1, list2):</code></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 zip 示例</h4>
+                        <pre><code>names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 35]
+
+# 同时遍历两个列表
+for name, age in zip(names, ages):
+    print(f"{name} is {age} years old")
+
+# 输出：
+# Alice is 25 years old
+# Bob is 30 years old
+# Charlie is 35 years old
+
+# 创建字典
+person_dict = dict(zip(names, ages))
+print(person_dict)  # {'Alice': 25, 'Bob': 30, 'Charlie': 35}</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-8">def combine_stock_price(tickers, prices):
+    # 在这里写你的代码
+    # 提示：使用 zip(tickers, prices)
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(8)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(8)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-8"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 9 -->
+                <div class="lesson-content" id="lesson-9">
+                    <h2>练习 9：嵌套循环 🚀</h2>
+                    <p>使用嵌套循环生成所有可能的配对。</p>
+                    <p>例如：list1 = ["A", "B"], list2 = [1, 2]</p>
+                    <p>结果：[("A", 1), ("A", 2), ("B", 1), ("B", 2)]</p>
+
+                    <div class="knowledge-box">
+                        <h4>🚀 扩展知识：嵌套循环</h4>
+                        <p>嵌套循环就是循环里面还有循环，用于处理多维数据或生成组合。</p>
+                        <p><strong>注意：</strong>嵌套循环的时间复杂度是 O(n×m)，数据量大时要小心！</p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 嵌套循环示例</h4>
+                        <pre><code>colors = ["红", "蓝"]
+sizes = ["S", "M", "L"]
+
+# 生成所有颜色和尺寸的组合
+for color in colors:
+    for size in sizes:
+        print(f"{color}-{size}")
+
+# 输出：
+# 红-S
+# 红-M
+# 红-L
+# 蓝-S
+# 蓝-M
+# 蓝-L</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-9">def generate_pairs(list1, list2):
+    # 在这里写你的代码
+    # 提示：使用两层 for 循环
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(9)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(9)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-9"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 练习 10 -->
+                <div class="lesson-content" id="lesson-10">
+                    <h2>练习 10：综合应用 🎯</h2>
+                    <p>综合运用本章所学知识，分析股票投资组合。</p>
+
+                    <div class="hint-box">
+                        <h4>💡 任务说明</h4>
+                        <p>给定一个股票列表，每个股票是一个字典，包含：</p>
+                        <ul>
+                            <li><code>ticker</code>: 股票代码</li>
+                            <li><code>price</code>: 价格</li>
+                            <li><code>shares</code>: 持有数量</li>
+                        </ul>
+                        <p>返回一个分析报告字典，包含：</p>
+                        <ul>
+                            <li><code>total_value</code>: 总价值（所有股票的 price × shares 之和）</li>
+                            <li><code>high_value_stocks</code>: 价值 > 10000 的股票代码列表</li>
+                            <li><code>stock_count</code>: 股票数量</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>📝 示例</h4>
+                        <pre><code>stocks = [
+    {"ticker": "AAPL", "price": 150, "shares": 100},  # 价值 15000
+    {"ticker": "GOOGL", "price": 2800, "shares": 5},  # 价值 14000
+    {"ticker": "MSFT", "price": 100, "shares": 50}    # 价值 5000
+]
+
+result = analyze_portfolio(stocks)
+
+# 期望输出：
+# {
+#     "total_value": 34000,
+#     "high_value_stocks": ["AAPL", "GOOGL"],
+#     "stock_count": 3
+# }</code></pre>
+                    </div>
+
+                    <div class="code-editor">
+                        <textarea id="code-10">def analyze_portfolio(stocks):
+    # stocks 是一个字典列表，每个字典包含 ticker, price, shares
+    # 返回一个字典，包含：
+    # - total_value: 总价值
+    # - high_value_stocks: 价值 > 10000 的股票代码列表
+    # - stock_count: 股票数量
+    pass</textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="runTest(10)">运行测试</button>
+                            <button class="btn btn-secondary" onclick="resetCode(10)">重置代码</button>
+                        </div>
+                    </div>
+                    <div class="output-area" id="output-10"></div>
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="prevExercise()">← 上一题</button>
+                        <button class="btn btn-primary" onclick="nextExercise()" style="visibility: hidden;">下一题 →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="chapter2.js"></script>
+</body>
+</html>

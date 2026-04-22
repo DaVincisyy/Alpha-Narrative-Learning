@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python 学习平台 - 从零到量化金融</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.5em;
+            opacity: 0.95;
+        }
+
+        .worlds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .world-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .world-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .world-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .world-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .world-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .world-description {
+            color: #64748b;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .world-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .status-available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-locked {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 40px;
+        }
+
+        .info-section h2 {
+            color: #1e293b;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .info-section p {
+            color: #64748b;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .feature h3 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Python 学习平台</h1>
+            <p>从零开始，掌握量化金融与 NLP</p>
+        </div>
+
+        <div class="worlds-grid">
+            <!-- 世界 1 -->
+            <a href="world1/index.html" class="world-card">
+                <div class="world-icon">🌱</div>
+                <div class="world-title">世界 1：Python 基础村</div>
+                <div class="world-description">
+                    从零开始学习 Python 编程基础，掌握数据容器、循环、函数、文件操作和面向对象编程。
+                </div>
+                <div class="world-stats">
+                    <div class="stat">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">章节</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">40+</div>
+                        <div class="stat-label">练习</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4-5h</div>
+                        <div class="stat-label">预计时间</div>
+                    </div>
+                </div>
+                <span class="status-badge status-available">✓ 可学习</span>
+            </a>
+
+            <!-- 世界 2 -->
+            <div class="world-card locked">
+                <div class="world-icon">📊</div>
+                <div class="world-title">世界 2：Pandas 数据王国</div>
+                <div class="world-description">
+                    学习使用 Pandas 处理表格数据，掌握 DataFrame、数据筛选、统计分析和可视化。
+                </div>
+                <div class="world-stats">
+                    <div class="stat">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">章节</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">练习</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">4-5h</div>
+                        <div class="stat-label">预计时间</div>
+                    </div>
+                </div>
+                <span class="status-badge status-locked">🔒 即将推出</span>
+            </div>
+
+            <!-- 世界 3 -->
+            <div class="world-card locked">
+                <div class="world-icon">🧠</div>
+                <div class="world-title">世界 3：NLP 魔法学院</div>
+                <div class="world-description">
+                    理解文本处理和情绪分析，学习如何使用 LLM 分析财报文本。
+                </div>
+                <div class="world-stats">
+                    <div class="stat">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">章节</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">练习</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">3-4h</div>
+                        <div class="stat-label">预计时间</div>
+                    </div>
+                </div>
+                <span class="status-badge status-locked">🔒 即将推出</span>
+            </div>
+
+            <!-- 世界 4 -->
+            <div class="world-card locked">
+                <div class="world-icon">📈</div>
+                <div class="world-title">世界 4：量化分析城</div>
+                <div class="world-description">
+                    学习量化金融核心概念，掌握因子工程、数据可视化和统计检验。
+                </div>
+                <div class="world-stats">
+                    <div class="stat">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">章节</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">15+</div>
+                        <div class="stat-label">练习</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">3-4h</div>
+                        <div class="stat-label">预计时间</div>
+                    </div>
+                </div>
+                <span class="status-badge status-locked">🔒 即将推出</span>
+            </div>
+
+            <!-- 世界 5 -->
+            <div class="world-card locked">
+                <div class="world-icon">🚀</div>
+                <div class="world-title">世界 5：实战项目岛</div>
+                <div class="world-description">
+                    运行和扩展真实的量化 NLP 项目，设计自己的量化策略。
+                </div>
+                <div class="world-stats">
+                    <div class="stat">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">章节</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">练习</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">3-5h</div>
+                        <div class="stat-label">预计时间</div>
+                    </div>
+                </div>
+                <span class="status-badge status-locked">🔒 即将推出</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>📖 关于这个平台</h2>
+            <p>
+                这是一个完整的、从零开始的 Python 数据分析学习系统，专为完全零基础的学习者设计。
+                通过 5 个世界的学习，你将能够独立运行和改进量化金融 NLP 项目。
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>🎯 从零开始</h3>
+                    <p>不假设任何编程经验，所有概念都从最基础讲起</p>
+                </div>
+                <div class="feature">
+                    <h3>💻 互动式学习</h3>
+                    <p>每章都有练习题和自动测试系统，实时反馈</p>
+                </div>
+                <div class="feature">
+                    <h3>📈 真实场景</h3>
+                    <p>所有例子都基于股票数据和量化金融场景</p>
+                </div>
+                <div class="feature">
+                    <h3>🚀 渐进式难度</h3>
+                    <p>从基础语法到实战项目，循序渐进</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
