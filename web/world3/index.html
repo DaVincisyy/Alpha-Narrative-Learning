@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>World 3: NLP魔法学院</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 40px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; }
+        h1 { color: #f5576c; text-align: center; }
+        .chapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; }
+        .chapter-card { background: #fef3f4; padding: 30px; border-radius: 15px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .chapter-card:hover { transform: translateY(-5px); border-color: #f5576c; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .chapter-title { font-size: 1.5em; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+        .chapter-desc { color: #64748b; line-height: 1.6; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #f5576c; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-btn">← 返回主页</a>
+        <h1>🧠 World 3: NLP魔法学院</h1>
+        <p style="text-align: center; color: #64748b; font-size: 1.2em;">理解文本处理和情绪分析</p>
+        <div class="chapters">
+            <div class="chapter-card" onclick="location.href='chapter7.html'">
+                <div class="chapter-title">📝 第7章：文本处理基础</div>
+                <div class="chapter-desc">学习字符串操作、中文分词、停用词过滤等文本处理技术。</div>
+                <div style="margin-top: 15px; color: #f5576c; font-weight: bold;">8个练习</div>
+            </div>
+            <div class="chapter-card" onclick="location.href='chapter8.html'">
+                <div class="chapter-title">😊 第8章：情绪分析原理</div>
+                <div class="chapter-desc">理解情绪分析的基本原理，学习如何判断文本的情感倾向。</div>
+                <div style="margin-top: 15px; color: #f5576c; font-weight: bold;">8个练习</div>
+            </div>
+            <div class="chapter-card" onclick="location.href='chapter9.html'">
+                <div class="chapter-title">💻 第9章：项目核心代码解读</div>
+                <div class="chapter-desc">深入理解 quant-NPL 项目的核心代码和实现逻辑。</div>
+                <div style="margin-top: 15px; color: #f5576c; font-weight: bold;">8个练习</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

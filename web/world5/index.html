@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>World 5: 实战项目岛</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); min-height: 100vh; padding: 40px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; }
+        h1 { color: #fa709a; text-align: center; }
+        .chapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; }
+        .chapter-card { background: #fff5f7; padding: 30px; border-radius: 15px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .chapter-card:hover { transform: translateY(-5px); border-color: #fa709a; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .chapter-title { font-size: 1.5em; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+        .chapter-desc { color: #64748b; line-height: 1.6; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #fa709a; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-btn">← 返回主页</a>
+        <h1>🚀 World 5: 实战项目岛</h1>
+        <p style="text-align: center; color: #64748b; font-size: 1.2em;">运行和扩展真实项目</p>
+        <div class="chapters">
+            <div class="chapter-card" onclick="location.href='chapter13.html'">
+                <div class="chapter-title">⚙️ 第13章：完整流程实战</div>
+                <div class="chapter-desc">运行完整的 quant-NPL 项目，理解从数据到策略的全流程。</div>
+                <div style="margin-top: 15px; color: #fa709a; font-weight: bold;">8个练习</div>
+            </div>
+            <div class="chapter-card" onclick="location.href='chapter14.html'">
+                <div class="chapter-title">🏆 第14章：进阶挑战</div>
+                <div class="chapter-desc">扩展和改进项目，完成你自己的量化策略。</div>
+                <div style="margin-top: 15px; color: #fa709a; font-weight: bold;">8个练习</div>
+            </div>
+        </div>
+        <div style="margin-top: 60px; padding: 30px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 15px; color: white; text-align: center;">
+            <h2 style="margin-bottom: 20px;">🎉 恭喜完成所有学习！</h2>
+            <p style="font-size: 1.2em; line-height: 1.8;">
+                你已经掌握了 Python、Pandas、NLP 和量化分析的核心技能。<br>
+                现在你可以独立运行和改进 quant-NPL 项目了！
+            </p>
+        </div>
+    </div>
+</body>
+</html>

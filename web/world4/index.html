@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>World 4: 量化分析城</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); min-height: 100vh; padding: 40px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; }
+        h1 { color: #00f2fe; text-align: center; }
+        .chapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; }
+        .chapter-card { background: #f0f9ff; padding: 30px; border-radius: 15px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .chapter-card:hover { transform: translateY(-5px); border-color: #00f2fe; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .chapter-title { font-size: 1.5em; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+        .chapter-desc { color: #64748b; line-height: 1.6; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #00f2fe; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-btn">← 返回主页</a>
+        <h1>📈 World 4: 量化分析城</h1>
+        <p style="text-align: center; color: #64748b; font-size: 1.2em;">学习量化金融的核心概念</p>
+        <div class="chapters">
+            <div class="chapter-card" onclick="location.href='chapter10.html'">
+                <div class="chapter-title">🔧 第10章：因子工程</div>
+                <div class="chapter-desc">学习如何构建和标准化量化因子，将数据转化为交易信号。</div>
+                <div style="margin-top: 15px; color: #00f2fe; font-weight: bold;">8个练习</div>
+            </div>
+            <div class="chapter-card" onclick="location.href='chapter11.html'">
+                <div class="chapter-title">📊 第11章：数据可视化</div>
+                <div class="chapter-desc">用图表展示量化分析结果，发现数据中的规律。</div>
+                <div style="margin-top: 15px; color: #00f2fe; font-weight: bold;">8个练习</div>
+            </div>
+            <div class="chapter-card" onclick="location.href='chapter12.html'">
+                <div class="chapter-title">📉 第12章：统计检验</div>
+                <div class="chapter-desc">验证因子的有效性，判断策略是否真的有效。</div>
+                <div style="margin-top: 15px; color: #00f2fe; font-weight: bold;">8个练习</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

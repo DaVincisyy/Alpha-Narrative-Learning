@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第4章：DataFrame入门 - Pandas数据王国</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+        .back-button:hover { background: rgba(255,255,255,0.3); transform: translateX(-5px); }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: #4ade80;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+        .sidebar {
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .sidebar h2 { font-size: 1.3em; margin-bottom: 20px; color: #1e293b; }
+        .exercise-list { list-style: none; }
+        .exercise-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .exercise-item:hover { transform: translateX(5px); border-color: #667eea; }
+        .exercise-item.active { background: #667eea; color: white; border-color: #667eea; }
+        .content-area { padding: 40px; overflow-y: auto; }
+        .lesson-content { display: none; }
+        .lesson-content.active { display: block; }
+        .lesson-content h2 { color: #1e293b; font-size: 2em; margin-bottom: 20px; }
+        .lesson-content h3 { color: #475569; font-size: 1.5em; margin-top: 30px; margin-bottom: 15px; }
+        .lesson-content p { line-height: 1.8; color: #475569; margin-bottom: 15px; }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+        }
+        .hint-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .hint-box h4 { color: #92400e; margin-bottom: 10px; }
+        .test-info {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        .test-info h4 { color: #3730a3; margin-bottom: 10px; font-size: 1.2em; }
+        .test-info code {
+            background: #1e293b;
+            color: #4ade80;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-button">← 返回章节列表</a>
+            <h1>📊 第4章：DataFrame入门</h1>
+            <p>学习 Pandas 的核心数据结构</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>📝 练习列表</h2>
+                <ul class="exercise-list" id="exerciseList"></ul>
+            </div>
+
+            <div class="content-area" id="contentArea"></div>
+        </div>
+    </div>
+
+    <script src="chapter4.js"></script>
+</body>
+</html>
